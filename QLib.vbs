@@ -193,7 +193,6 @@ End Function
 // return string
 Function ImageToString(a_this)
     // Call TracePrint("Function ImageToString")
-    // Call TracePrint("a_this:"&a_this)
     Dim l_ret
     l_ret="Image{path:"&a_this&"}"
     // Call TracePrint("return "&l_ret)
