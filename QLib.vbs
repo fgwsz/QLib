@@ -83,6 +83,21 @@ Function PointIsNotEmpty(a_this)
     PointIsNotEmpty=l_ret
 End Function
 
+// a_this:Point
+// return void
+Function PointMoveTo(a_this)
+    // Call TracePrint("Function PointMoveTo")
+    Call MoveTo(PointGetX(a_this),PointGetY(a_this))
+End Function
+
+// a_this:Point
+// return void
+Function PointLeftClick(a_this)
+    // Call TracePrint("Function PointLeftClick")
+    PointMoveTo(a_this)
+    Call LeftClick(1)
+End Function
+
 /* class Point end */
 
 /* class Rect begin */

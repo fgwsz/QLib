@@ -43,6 +43,7 @@ Function MakeImageTask(a_image_name,a_image_factor)
     MakeImageTask=l_ret
 End Function
 
+// return void
 Function DelayTime()
     Call Delay(g_delay_time)
     Call Delay(RandomFrom0To1()*2000)
@@ -53,7 +54,6 @@ Function GetPageId()
     Call TracePrint("Function GetPageId")
     Dim l_is_received_page // bool
     Dim l_is_not_receive_page // bool
-    Dim l_is_unknown_page // bool
     Dim l_ret// int
     l_is_received_page=PointIsNotEmpty(FindImages(g_not_receive_gray_images))
     l_is_not_receive_page=PointIsNotEmpty(FindImages(g_received_gray_images))
@@ -67,25 +67,22 @@ Function GetPageId()
         l_ret=g_page_id_unknown
         Call TracePrint("Current Page is UnknownPage")
     End If
+    // Call TracePrint("return "&l_ret)
     GetPageId=l_ret
 End Function
 
+// return void
 Function JumpReceivedPage()
     Call TracePrint("Function JumpReceivedPage")
-    Dim l_pos // Point
-    l_pos=UntilFindImages(g_received_gray_images)
-    Call MoveTo(PointGetX(l_pos),PointGetY(l_pos))
-    Call LeftClick(1)
+    PointLeftClick(UntilFindImages(g_received_gray_images))
     Call TracePrint("Click Received(Gray) Button")
     Call DelayTime()
 End Function
 
+// return void
 Function JumpNotReceivePage()
     Call TracePrint("Function JumpNotReceivePage")
-    Dim l_pos // Point
-    l_pos=UntilFindImages(g_not_receive_gray_images)
-    Call MoveTo(PointGetX(l_pos),PointGetY(l_pos))
-    Call LeftClick(1)
+    PointLeftClick(UntilFindImages(g_not_receive_gray_images))
     Call TracePrint("Click NotReceive(Gray) Button")
     Call DelayTime()
 End Function
@@ -94,6 +91,9 @@ End Function
 // a_seconds:int
 // return void
 Function MouseWheelR(a_distance,a_seconds)
+    // Call TracePrint("Function MouseWheelR")
+    // Call TracePrint("a_distance:"&a_distance)
+    // Call TracePrint("a_seconds:"&a_seconds)
     Dim l_count // int
     Dim l_dy // double
     l_count=200
@@ -104,6 +104,7 @@ Function MouseWheelR(a_distance,a_seconds)
     Next
 End Function
 
+// return void
 Function SlideToCommandTop()
     Call TracePrint("Function SlideToCommandTop")
     Call MoveTo(g_screen_width*0.75,g_screen_height*0.5)
@@ -111,40 +112,35 @@ Function SlideToCommandTop()
     Call TracePrint("Slide To Command Top")
 End Function
 
+// return void
 Function ClickCommand()
     Call TracePrint("Function ClickCommand")
-    Dim l_pos // Point
-    l_pos=UntilFindImages(Array(MakeImageTask("Command_1",g_image_default_factor),MakeImageTask("Command_2",g_image_default_factor)))
-    Call MoveTo(PointGetX(l_pos),PointGetY(l_pos))
-    Call LeftClick(1)
+    PointLeftClick(UntilFindImages(Array(MakeImageTask("Command_1",g_image_default_factor),MakeImageTask("Command_2",g_image_default_factor))))
     Call TracePrint("Click Command")
     Call DelayTime()
 End Function
 
+// return void
 Function ReceiveCommand()
     Call TracePrint("Function ReceiveCommand")
     Call ClickCommand()
     Call SlideToCommandTop()
-    Dim l_pos // Point
-    l_pos=ImageTaskUntilFind(MakeImageTask("ReceiveCommand",g_image_default_factor))
-    Call MoveTo(PointGetX(l_pos),PointGetY(l_pos))
-    Call LeftClick(1)
+    PointLeftClick(ImageTaskUntilFind(MakeImageTask("ReceiveCommand",g_image_default_factor)))
     Call TracePrint("Click ReceiveCommand Button")
     Call DelayTime()
 End Function
 
+// return void
 Function ExecuteCommand()
     Call TracePrint("Function ExecuteCommand")
     Call ClickCommand()
     Call SlideToCommandTop()
-    Dim l_pos // Point
-    l_pos=ImageTaskUntilFind(MakeImageTask("ExecuteCommand",g_image_default_factor))
-    Call MoveTo(PointGetX(l_pos),PointGetY(l_pos))
-    Call LeftClick(1)
+    PointLeftClick(ImageTaskUntilFind(MakeImageTask("ExecuteCommand",g_image_default_factor)))
     Call TracePrint("Click ExecuteCommand Button")
     Call DelayTime()
 End Function
 
+// return void
 Function TestPageJump()
     Call TracePrint("Function TestPageJump")
     Dim l_page_id // int
@@ -160,6 +156,7 @@ Function TestPageJump()
     Wend
 End Function
 
+// return void
 Function Main()
     Call TracePrint("Function Main")
     Dim l_page_id // int
