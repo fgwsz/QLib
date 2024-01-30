@@ -294,7 +294,7 @@ Function ImageTaskUntilFind(a_this)
         End If
     Wend
     Rem ImageTaskUntilFind_break
-    // Call TracePrint("return "&l_ret)
+    // Call TracePrint("return "&PointToString(l_ret))
     ImageTaskUntilFind=l_ret
 End Function
 
