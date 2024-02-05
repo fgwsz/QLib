@@ -3,7 +3,8 @@
 Dim g_screen_width // int
 Dim g_screen_height // int
 Dim g_screen_rect // Rect
-Dim g_image_default_path // string
+// string
+UserVar g_image_default_path="Attachment:\" "Attachment Path(last character must be '\')"
 Dim g_image_default_ext // string
 Dim g_image_default_factor // float in [0,1]
 Dim g_not_receive_gray_images // Array<ImageTask>
@@ -16,7 +17,6 @@ Dim g_page_id_unknown // int
 g_screen_width=Plugin.Sys.GetScRX()
 g_screen_height=Plugin.Sys.GetScRY()
 g_screen_rect=RectNew(PointNew(0,0),PointNew(g_screen_width,g_screen_height))
-g_image_default_path=Plugin.Sys.GetDir(0)&"\Attachment\"
 g_image_default_ext=".bmp"
 g_image_default_factor=0.8
 g_not_receive_gray_images=Array(MakeImageTask("NotReceive(Gray)_1",g_image_default_factor),MakeImageTask("NotReceive(Gray)_2",g_image_default_factor))
