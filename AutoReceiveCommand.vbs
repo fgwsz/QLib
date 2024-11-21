@@ -181,11 +181,11 @@ Function Main()
     Call TracePrint("Function Main")
     Dim l_page_id // int
     Dim l_has_no_data // bool
-    Dim l_has_command // bool
+    Dim l_has_no_command // bool
     While True
         l_page_id=GetPageId()
         l_has_no_data=False
-        l_has_command=False
+        l_has_no_command=False
         If(l_page_id=g_page_id_not_receive)Then
             l_has_no_data=PointIsNotEmpty(ImageTaskFind(g_no_data))
             If(l_has_no_data)Then
@@ -193,8 +193,8 @@ Function Main()
                 Call JumpReceivedPage()
                 Goto Main_next_loop
             End If
-            l_has_command=PointIsNotEmpty(FindImages(g_command))
-            If(Not l_has_command)Then 
+            l_has_no_command=Not PointIsNotEmpty(FindImages(g_command))
+            If(l_has_no_command)Then 
                 Call TracePrint("No Command")
                 Call JumpReceivedPage()
                 Goto Main_next_loop
@@ -208,8 +208,8 @@ Function Main()
                 Call JumpNotReceivePage()
                 Goto Main_next_loop
             End If
-            l_has_command=PointIsNotEmpty(FindImages(g_command))
-            If(Not l_has_command)Then 
+            l_has_no_command=Not PointIsNotEmpty(FindImages(g_command))
+            If(l_has_no_command)Then 
                 Call TracePrint("No Command")
                 Call JumpNotReceivePage()
                 Goto Main_next_loop
