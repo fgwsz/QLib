@@ -63,10 +63,8 @@ Function GetPageId()
     Dim l_is_received_page // bool
     Dim l_is_not_receive_page // bool
     Dim l_ret // int
-    l_is_received_page=False
-    l_is_not_receive_page=False
-    l_is_received_page=PointIsNotEmpty(FindImages(g_not_receive_gray_images))
-    l_is_not_receive_page=PointIsNotEmpty(FindImages(g_received_gray_images))
+    l_is_received_page=HasImages(g_not_receive_gray_images)
+    l_is_not_receive_page=HasImages(g_received_gray_images)
     If(l_is_not_receive_page And (Not l_is_received_page))Then
         l_ret=g_page_id_not_receive
         Call TracePrint("Current Page is NotReceivePage")
@@ -135,8 +133,7 @@ Function ReceiveCommand()
     Call TracePrint("Function ReceiveCommand")
     Call ClickCommand()
     Dim l_has_receive_command // bool
-    l_has_receive_command=False
-    l_has_receive_command=PointIsNotEmpty(ImageTaskFind(g_receive_command))
+    l_has_receive_command=ImageTaskHas(g_receive_command)
     If(Not l_has_receive_command)Then
         Call SlideToCommandTop()
     End If
@@ -150,8 +147,7 @@ Function ExecuteCommand()
     Call TracePrint("Function ExecuteCommand")
     Call ClickCommand()
     Dim l_has_execute_command // bool
-    l_has_execute_command=False
-    l_has_execute_command=PointIsNotEmpty(ImageTaskFind(g_execute_command))
+    l_has_execute_command=ImageTaskHas(g_execute_command)
     If(Not l_has_execute_command)Then
         Call SlideToCommandTop()
     End If
@@ -180,37 +176,22 @@ End Function
 Function Main()
     Call TracePrint("Function Main")
     Dim l_page_id // int
-    Dim l_has_no_data // bool
-    Dim l_has_no_command // bool
+    Dim l_change_page // bool
     While True
         l_page_id=GetPageId()
-        l_has_no_data=False
-        l_has_no_command=False
         If(l_page_id=g_page_id_not_receive)Then
-            l_has_no_data=PointIsNotEmpty(ImageTaskFind(g_no_data))
-            If(l_has_no_data)Then
+            l_change_page=ImageTaskHas(g_no_data) Or (Not HasImages(g_command))
+            If(l_change_page)Then
                 Call TracePrint("NoData")
-                Call JumpReceivedPage()
-                Goto Main_next_loop
-            End If
-            l_has_no_command=Not PointIsNotEmpty(FindImages(g_command))
-            If(l_has_no_command)Then 
-                Call TracePrint("No Command")
                 Call JumpReceivedPage()
                 Goto Main_next_loop
             End If
             Call TracePrint("Has Command")
             Call ReceiveCommand()
         ElseIf(l_page_id=g_page_id_received)Then
-            l_has_no_data=PointIsNotEmpty(ImageTaskFind(g_no_data))
-            If(l_has_no_data)Then
+            l_change_page=ImageTaskHas(g_no_data) Or (Not HasImages(g_command))
+            If(l_change_page)Then
                 Call TracePrint("NoData")
-                Call JumpNotReceivePage()
-                Goto Main_next_loop
-            End If
-            l_has_no_command=Not PointIsNotEmpty(FindImages(g_command))
-            If(l_has_no_command)Then 
-                Call TracePrint("No Command")
                 Call JumpNotReceivePage()
                 Goto Main_next_loop
             End If

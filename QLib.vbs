@@ -314,6 +314,16 @@ Function ImageTaskUntilFind(a_this)
     ImageTaskUntilFind=l_ret
 End Function
 
+// a_this:ImageTask
+// return bool
+Function ImageTaskHas(a_this)
+    // Call TracePrint("Function ImageTaskHas")
+    Dim l_ret // bool
+    l_ret=PointIsNotEmpty(ImageTaskFind(a_this))
+    // Call TracePrint("return "&l_ret)
+    ImageTaskHas=l_ret
+End Function
+
 /* class ImageTask end */
 
 // a_image_task_array:Array<ImageTask>
@@ -364,6 +374,17 @@ Function UntilFindImages(a_image_task_array)
     Rem UntilFindImages_break
     // Call TracePrint("return "&PointToString(l_ret))
     UntilFindImages=l_ret
+End Function
+
+// a_image_task_array:Array<ImageTask>
+// return bool
+Function HasImages(a_image_task_array)
+    // Call TracePrint("Function HasImages")
+    // Call TracePrint("a_image_task_array:"&ImageTaskArrayToString(a_image_task_array))
+    Dim l_ret // bool
+    l_ret=PointIsNotEmpty(FindImages(a_image_task_array))
+    HasImages=l_ret
+    // Call TracePrint("return "&l_ret)
 End Function
 
 // return float in [0,1]
