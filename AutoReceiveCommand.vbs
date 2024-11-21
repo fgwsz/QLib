@@ -9,6 +9,10 @@ Dim g_image_default_ext // string
 Dim g_image_default_factor // float in [0,1]
 Dim g_not_receive_gray_images // Array<ImageTask>
 Dim g_received_gray_images // Array<ImageTask>
+Dim g_command // Array<ImageTask>
+Dim g_receive_command // ImageTask
+Dim g_execute_command // ImageTask
+Dim g_no_data // ImageTask
 Dim g_delay_time // int ms
 Dim g_page_id_not_receive // int
 Dim g_page_id_received // int
@@ -59,12 +63,14 @@ Function GetPageId()
     Dim l_is_received_page // bool
     Dim l_is_not_receive_page // bool
     Dim l_ret // int
+    l_is_received_page=False
+    l_is_not_receive_page=False
     l_is_received_page=PointIsNotEmpty(FindImages(g_not_receive_gray_images))
     l_is_not_receive_page=PointIsNotEmpty(FindImages(g_received_gray_images))
-    If(l_is_not_receive_page and (not l_is_received_page))Then
+    If(l_is_not_receive_page And (Not l_is_received_page))Then
         l_ret=g_page_id_not_receive
         Call TracePrint("Current Page is NotReceivePage")
-    ElseIf(l_is_received_page and (not l_is_not_receive_page))Then
+    ElseIf(l_is_received_page And (Not l_is_not_receive_page))Then
         l_ret=g_page_id_received
         Call TracePrint("Current Page is ReceivedPage")
     Else
