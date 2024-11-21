@@ -2,9 +2,9 @@
 
 Dim g_screen_width // int
 Dim g_screen_height // int
-Dim g_screen_rect // Rect
+Dim g_screen_rect// Rect
 // string
-UserVar g_image_default_path="Attachment:\" "Attachment Path(last character must be '\')"
+UserVar g_image_default_path="C:\Program Files (x86)\qm2014\AutoReceiveCommand\Attachment\" "Attachment Path(last character must be \)"
 Dim g_image_default_ext // string
 Dim g_image_default_factor // float in [0,1]
 Dim g_not_receive_gray_images // Array<ImageTask>
@@ -21,6 +21,10 @@ g_image_default_ext=".bmp"
 g_image_default_factor=0.87
 g_not_receive_gray_images=Array(MakeImageTask("NotReceive(Gray)_1",g_image_default_factor),MakeImageTask("NotReceive(Gray)_2",g_image_default_factor))
 g_received_gray_images=Array(MakeImageTask("Received(Gray)_1",g_image_default_factor),MakeImageTask("Received(Gray)_2",g_image_default_factor))
+g_command=Array(MakeImageTask("Command_1",g_image_default_factor),MakeImageTask("Command_1",g_image_default_factor))
+g_receive_command=MakeImageTask("ReceiveCommand",g_image_default_factor)
+g_execute_command=MakeImageTask("ExecuteCommand", g_image_default_factor)
+g_no_data=MakeImageTask("NoData",g_image_default_factor)
 g_delay_time=3000
 g_page_id_not_receive=0
 g_page_id_received=1
@@ -46,7 +50,7 @@ End Function
 // return void
 Function DelayTime()
     Call Delay(g_delay_time)
-    Call Delay(RandomFrom0To1()*2000)
+    Call Delay(RandomFrom0To1()*500)
 End Function
 
 // return page id // int
@@ -54,7 +58,7 @@ Function GetPageId()
     Call TracePrint("Function GetPageId")
     Dim l_is_received_page // bool
     Dim l_is_not_receive_page // bool
-    Dim l_ret// int
+    Dim l_ret // int
     l_is_received_page=PointIsNotEmpty(FindImages(g_not_receive_gray_images))
     l_is_not_receive_page=PointIsNotEmpty(FindImages(g_received_gray_images))
     If(l_is_not_receive_page and (not l_is_received_page))Then
@@ -115,7 +119,7 @@ End Function
 // return void
 Function ClickCommand()
     Call TracePrint("Function ClickCommand")
-    PointLeftClick(UntilFindImages(Array(MakeImageTask("Command_1",g_image_default_factor),MakeImageTask("Command_2",g_image_default_factor))))
+    PointLeftClick(UntilFindImages(g_command))
     Call TracePrint("Click Command")
     Call DelayTime()
 End Function
@@ -124,8 +128,13 @@ End Function
 Function ReceiveCommand()
     Call TracePrint("Function ReceiveCommand")
     Call ClickCommand()
-    Call SlideToCommandTop()
-    PointLeftClick(ImageTaskUntilFind(MakeImageTask("ReceiveCommand",g_image_default_factor)))
+    Dim l_has_receive_command // bool
+    l_has_receive_command=False
+    l_has_receive_command=PointIsNotEmpty(ImageTaskFind(g_receive_command))
+    If(Not l_has_receive_command)Then
+        Call SlideToCommandTop()
+    End If
+    PointLeftClick(ImageTaskUntilFind(g_receive_command))
     Call TracePrint("Click ReceiveCommand Button")
     Call DelayTime()
 End Function
@@ -134,8 +143,13 @@ End Function
 Function ExecuteCommand()
     Call TracePrint("Function ExecuteCommand")
     Call ClickCommand()
-    Call SlideToCommandTop()
-    PointLeftClick(ImageTaskUntilFind(MakeImageTask("ExecuteCommand",g_image_default_factor)))
+    Dim l_has_execute_command // bool
+    l_has_execute_command=False
+    l_has_execute_command=PointIsNotEmpty(ImageTaskFind(g_execute_command))
+    If(Not l_has_execute_command)Then
+        Call SlideToCommandTop()
+    End If
+    PointLeftClick(ImageTaskUntilFind(g_execute_command))
     Call TracePrint("Click ExecuteCommand Button")
     Call DelayTime()
 End Function
@@ -160,24 +174,41 @@ End Function
 Function Main()
     Call TracePrint("Function Main")
     Dim l_page_id // int
-    Dim l_change_page_flag // bool
+    Dim l_has_no_data // bool
+    Dim l_has_command // bool
     While True
         l_page_id=GetPageId()
+        l_has_no_data=False
+        l_has_command=False
         If(l_page_id=g_page_id_not_receive)Then
-            l_change_page_flag=PointIsNotEmpty(ImageTaskFind(MakeImageTask("NoData",g_image_default_factor)))
-            If(l_change_page_flag)Then
+            l_has_no_data=PointIsNotEmpty(ImageTaskFind(g_no_data))
+            If(l_has_no_data)Then
                 Call TracePrint("NoData")
                 Call JumpReceivedPage()
                 Goto Main_next_loop
             End If
+            l_has_command=PointIsNotEmpty(FindImages(g_command))
+            If(Not l_has_command)Then 
+                Call TracePrint("No Command")
+                Call JumpReceivedPage()
+                Goto Main_next_loop
+            End If
+            Call TracePrint("Has Command")
             Call ReceiveCommand()
         ElseIf(l_page_id=g_page_id_received)Then
-            l_change_page_flag=PointIsNotEmpty(ImageTaskFind(MakeImageTask("NoData",g_image_default_factor)))
-            If(l_change_page_flag)Then
+            l_has_no_data=PointIsNotEmpty(ImageTaskFind(g_no_data))
+            If(l_has_no_data)Then
                 Call TracePrint("NoData")
                 Call JumpNotReceivePage()
                 Goto Main_next_loop
             End If
+            l_has_command=PointIsNotEmpty(FindImages(g_command))
+            If(Not l_has_command)Then 
+                Call TracePrint("No Command")
+                Call JumpNotReceivePage()
+                Goto Main_next_loop
+            End If
+            Call TracePrint("Has Command")
             Call ExecuteCommand()
         ElseIf(l_page_id=g_page_id_unknown)Then
             Call JumpNotReceivePage()

@@ -1,8 +1,8 @@
-echo "you can input exit to abort git push."
-$commit_info=Read-Host -Prompt "input commit info"
-if($commit_info -eq "exit"){
-    echo "git push exit!"
-}else{
+$root_path=Split-Path -Parent $MyInvocation.MyCommand.Definition
+echo "You Can Input q For Abort."
+$commit_info=Read-Host -Prompt "Input Git Commit Info"
+if(!($commit_info -eq "q")){
+    cd $root_path
     git add .
     git commit -m $commit_info
     git push
